@@ -60,11 +60,11 @@ Definition of done
 **Depends on:** Tasks 1, 2
 **Blocks:** Tasks 4 through 9
 
-- [ ] 3.1 Create GraphQL types for User, Auth, Question, and Answer.
-- [ ] 3.2 Define Query.questions and Query.question(id: ID!).
-- [ ] 3.3 Define Mutation.register, Mutation.login, Mutation.createQuestion, and Mutation.addAnswer.
-- [ ] 3.4 Ensure field names map cleanly to current Mongoose models and current frontend needs.
-- [ ] 3.5 Decide and document any naming differences between internal implementation and public schema.
+- [x] 3.1 Create GraphQL types for User, Auth, Question, and Answer.
+- [x] 3.2 Define Query.questions and Query.question(id: ID!).
+- [x] 3.3 Define Mutation.register, Mutation.login, Mutation.createQuestion, and Mutation.addAnswer.
+- [x] 3.4 Ensure field names map cleanly to current Mongoose models and current frontend needs.
+- [x] 3.5 Decide and document any naming differences between internal implementation and public schema.
 
 ```graphql
 type User {
@@ -122,11 +122,11 @@ Definition of done
 **Depends on:** Tasks 2, 3
 **Blocks:** Tasks 5 through 9
 
-- [ ] 4.1 Create the Apollo server bootstrap and mount it at /graphql.
-- [ ] 4.2 Preserve MongoDB connection startup behavior.
-- [ ] 4.3 Preserve local frontend CORS access.
-- [ ] 4.4 Remove REST route mounting from the active server path.
-- [ ] 4.5 Keep a simple health path only if it is still useful and does not conflict with the GraphQL goal.
+- [x] 4.1 Create the Apollo server bootstrap and mount it at /graphql.
+- [x] 4.2 Preserve MongoDB connection startup behavior.
+- [x] 4.3 Preserve local frontend CORS access.
+- [x] 4.4 Remove REST route mounting from the active server path.
+- [x] 4.5 Keep a simple health path only if it is still useful and does not conflict with the GraphQL goal.
 
 ```js
 // Target shape
