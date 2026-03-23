@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client/react';
 
 const GET_QUESTIONS = gql`
   query Questions {
