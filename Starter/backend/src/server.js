@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express4';
 import typeDefs from './typeDefs.js';
@@ -10,8 +11,17 @@ import resolvers from './resolvers.js';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Context function is replaced with JWT auth logic in Task 5.
-const context = async ({ req }) => ({ req });
+const context = async ({ req }) => {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) return { user: null };
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    return { user };
+  } catch {
+    return { user: null };
+  }
+};
 
 const start = async () => {
   try {

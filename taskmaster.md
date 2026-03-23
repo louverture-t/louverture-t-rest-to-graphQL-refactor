@@ -146,10 +146,10 @@ Definition of done
 **Depends on:** Tasks 1, 3, 4
 **Blocks:** Tasks 6 through 9
 
-- [ ] 5.1 Reuse the current bearer-token extraction logic from the auth middleware.
-- [ ] 5.2 Verify JWTs in Apollo context using the current JWT secret.
-- [ ] 5.3 Expose authenticated user data on context.user.
-- [ ] 5.4 Normalize missing or invalid token behavior for protected resolvers.
+- [x] 5.1 Reuse the current bearer-token extraction logic from the auth middleware.
+- [x] 5.2 Verify JWTs in Apollo context using the current JWT secret.
+- [x] 5.3 Expose authenticated user data on context.user.
+- [x] 5.4 Normalize missing or invalid token behavior for protected resolvers.
 
 ```js
 const context = async ({ req }) => {
