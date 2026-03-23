@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useApolloClient } from '@apollo/client';
 import { api } from './api';
 
 const defaultAuth = { username: '', email: '', password: '' };
 const defaultQuestion = { title: '', body: '' };
 
 function App() {
+  const apolloClient = useApolloClient();
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('user');
@@ -71,6 +73,7 @@ function App() {
     setToken('');
     setUser(null);
     setStatus('Signed out.');
+    apolloClient.clearStore();
   };
 
   const handleQuestionSubmit = async (event) => {

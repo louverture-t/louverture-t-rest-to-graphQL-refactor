@@ -176,12 +176,12 @@ Definition of done
 **Depends on:** Tasks 3, 5
 **Blocks:** Tasks 7 through 9
 
-- [ ] 6.1 Move register validation and uniqueness checks into Mutation.register.
-- [ ] 6.2 Preserve bcrypt password hashing in Mutation.register.
-- [ ] 6.3 Return token plus user from Mutation.register to support auto-login.
-- [ ] 6.4 Move login credential validation into Mutation.login.
-- [ ] 6.5 Preserve JWT claims from the current login route.
-- [ ] 6.6 Normalize GraphQL resolver errors so the frontend can show meaningful status messages.
+- [x] 6.1 Move register validation and uniqueness checks into Mutation.register.
+- [x] 6.2 Preserve bcrypt password hashing in Mutation.register.
+- [x] 6.3 Return token plus user from Mutation.register to support auto-login.
+- [x] 6.4 Move login credential validation into Mutation.login.
+- [x] 6.5 Preserve JWT claims from the current login route.
+- [x] 6.6 Normalize GraphQL resolver errors so the frontend can show meaningful status messages.
 
 ```js
 Mutation: {
@@ -207,12 +207,12 @@ Definition of done
 **Depends on:** Tasks 3, 5
 **Blocks:** Tasks 8 through 9
 
-- [ ] 7.1 Move question list logic into Query.questions and preserve descending createdAt sort order.
-- [ ] 7.2 Move single-question lookup into Query.question(id).
-- [ ] 7.3 Move create question logic into Mutation.createQuestion with auth enforcement.
-- [ ] 7.4 Move add answer logic into Mutation.addAnswer with auth enforcement.
-- [ ] 7.5 Preserve existing embedded answer storage in the Question model.
-- [ ] 7.6 Preserve validation behavior for missing title, question body, and answer body.
+- [x] 7.1 Move question list logic into Query.questions and preserve descending createdAt sort order.
+- [x] 7.2 Move single-question lookup into Query.question(id).
+- [x] 7.3 Move create question logic into Mutation.createQuestion with auth enforcement.
+- [x] 7.4 Move add answer logic into Mutation.addAnswer with auth enforcement.
+- [x] 7.5 Preserve existing embedded answer storage in the Question model.
+- [x] 7.6 Preserve validation behavior for missing title, question body, and answer body.
 
 ```js
 Query: {
@@ -240,10 +240,10 @@ Definition of done
 **Depends on:** Tasks 2, 3, 4, 5
 **Blocks:** Tasks 9 and 10
 
-- [ ] 8.1 Create the Apollo Client with an HTTP link targeting /graphql.
-- [ ] 8.2 Add an auth link that injects the bearer token from localStorage.
-- [ ] 8.3 Wrap the React app in ApolloProvider.
-- [ ] 8.4 Ensure logout clears both local auth state and Apollo cached data.
+- [x] 8.1 Create the Apollo Client with an HTTP link targeting /graphql.
+- [x] 8.2 Add an auth link that injects the bearer token from localStorage.
+- [x] 8.3 Wrap the React app in ApolloProvider.
+- [x] 8.4 Ensure logout clears both local auth state and Apollo cached data.
 
 ```js
 const httpLink = createHttpLink({ uri: 'http://localhost:4000/graphql' });
