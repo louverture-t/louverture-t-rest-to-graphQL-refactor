@@ -1,87 +1,122 @@
-# 🏆 Stack Eleven: REST to GraphQL Refactor (Starter)
+# Stack Eleven: GraphQL + Apollo Refactor
 
-## 🎯 Overview
-In this Starter, learners start with a complete full-stack REST application named **Stack Eleven** and refactor it to GraphQL + Apollo.
+## Overview
+Stack Eleven is a full-stack Q&A application. The REST API has been fully replaced with a
+GraphQL endpoint backed by Apollo Server 4. The React frontend communicates exclusively
+through Apollo Client — no REST fetch helpers remain.
 
-This Starter includes:
-- A working Express REST API (`backend/`)
-- A working React + Vite frontend (`frontend/`)
-- JWT auth and protected write routes
-- Question and answer features
+## Architecture
 
-## 🗂️ Starter Structure
-- `backend/src/server.js` REST server bootstrap
-- `backend/src/routes/authRoutes.js` register + login routes
-- `backend/src/routes/questionRoutes.js` question + answer routes
-- `backend/src/models/*.js` Mongoose models
-- `frontend/src/App.jsx` REST UI flow
-- `frontend/src/api.js` REST request layer
+| Layer | Technology |
+|-------|-----------|
+| API server | Express + Apollo Server 4 (`@apollo/server`) |
+| Schema | GraphQL SDL (`backend/src/typeDefs.js`) |
+| Resolvers | `backend/src/resolvers.js` |
+| Database | MongoDB via Mongoose |
+| Auth | JWT in Apollo context (`backend/src/server.js`) |
+| Frontend | React + Vite + Apollo Client |
+| State | Apollo `useQuery` / `useMutation` hooks |
 
-## 🚀 Run the Starter
-1. Create env file:
-   - Copy `backend/.env.example` to `backend/.env`
-2. Install dependencies:
-   - `npm install`
-   - `npm run install:all`
-3. Start MongoDB locally.
-4. Run both apps:
-   - `npm run dev`
+## Project Structure
 
-App URLs:
+```
+Starter/
+  backend/
+    src/
+      server.js         Apollo Server bootstrap, context, MongoDB connect
+      typeDefs.js       GraphQL schema (SDL)
+      resolvers.js      Query and Mutation resolvers
+      middleware/auth.js  (retained for reference, not mounted)
+      models/
+        User.js
+        Question.js
+  frontend/
+    src/
+      main.jsx          ApolloProvider + auth link setup
+      App.jsx           useQuery / useMutation hooks, all UI logic
+      styles.css
+```
+
+## API Endpoint
+
+```
+POST http://localhost:4000/graphql
+```
+
+All queries and mutations go through this single endpoint.
+
+## GraphQL Schema
+
+```graphql
+type User   { id: ID!  username: String!  email: String! }
+type Auth   { token: String!  user: User! }
+type Answer { id: ID!  body: String!  createdBy: String!  userId: ID!  createdAt: String!  updatedAt: String! }
+type Question {
+  id: ID!  title: String!  body: String!  createdBy: String!  userId: ID!
+  answers: [Answer!]!  createdAt: String!  updatedAt: String!
+}
+
+type Query {
+  questions: [Question!]!
+  question(id: ID!): Question
+}
+
+type Mutation {
+  register(username: String!, email: String!, password: String!): Auth!
+  login(email: String!, password: String!): Auth!
+  createQuestion(title: String!, body: String!): Question!
+  addAnswer(questionId: ID!, body: String!): Question!
+}
+```
+
+## Auth Flow
+- `register` and `login` return `{ token, user }`.
+- The frontend stores `token` in `localStorage` and sends it as `Authorization: Bearer <token>`.
+- Apollo context extracts and verifies the JWT on every request.
+- `createQuestion` and `addAnswer` throw `UNAUTHENTICATED` if no valid token is present.
+
+## Setup and Run
+
+### Prerequisites
+- Node.js 18+
+- MongoDB running locally (default `mongodb://localhost:27017/stackeleven`)
+
+### Steps
+
+```bash
+# 1. Copy environment file
+cp backend/.env.example backend/.env
+# Edit backend/.env and set MONGODB_URI and JWT_SECRET
+
+# 2. Install dependencies
+npm install
+npm run install:all
+
+# 3. Start both apps (concurrently)
+npm run dev
+```
+
+### App URLs
 - Frontend: `http://localhost:5173`
-- Backend REST API: `http://localhost:4000/api`
+- GraphQL API: `http://localhost:4000/graphql`
 
-## 🧪 Starter Feature Checklist
-- Register a new account
-- Login and store JWT
-- Create a question (authenticated)
-- View all questions
-- Open one question
-- Add an answer (authenticated)
+## Tests
 
-## 🏗️ Student Refactor Targets
-Refactor this Starter from REST to GraphQL while preserving the same UX.
+Resolver auth enforcement is covered by unit tests in `backend/src/__tests__/`:
 
-### Target 1: Server Foundation
-- Install GraphQL server dependencies.
-- Replace REST route mounting in `backend/src/server.js`.
-- Add Apollo Server endpoint at `/graphql`.
+```bash
+cd backend
+npm test
+```
 
-### Target 2: Schema Design (SDL)
-Create types for:
-- `User`
-- `Auth`
-- `Question`
-- `Answer`
+Tests verify that `createQuestion` and `addAnswer` reject unauthenticated requests and pass
+the auth guard when a valid user context is provided.
 
-Add operations:
-- `Query.questions`
-- `Query.question(id: ID!)`
-- `Query.me`
-- `Mutation.register`
-- `Mutation.login`
-- `Mutation.createQuestion`
-- `Mutation.addAnswer`
-
-### Target 3: Resolvers
-- Move logic from REST handlers into GraphQL resolvers.
-- Keep authentication behavior identical.
-- Keep validation behavior equivalent.
-
-### Target 4: Client Migration
-- Remove direct REST fetch usage in `frontend/src/api.js`.
-- Add Apollo Client in `frontend/src/main.jsx`.
-- Replace REST calls with `useQuery` and `useMutation` in `frontend/src/App.jsx`.
-
-### Target 5: Verification
-- Confirm all existing app behavior still works.
-- Confirm protected mutations require JWT.
-- Confirm question and answer creation works end-to-end.
-
-## 💡 Hints
-- Start with `Query.questions` first to verify server/client link quickly.
-- Add authentication context before protected mutations.
-- Keep variable names close to existing REST payload names to reduce UI churn.
-
-## ✅ Goal
-Produce a complete GraphQL/Apollo refactor with no REST endpoint usage from the frontend.
+## Feature Checklist
+- [x] Register a new account (auto-login)
+- [x] Login and store JWT
+- [x] View all questions (sorted newest first)
+- [x] Open a single question with answers
+- [x] Create a question (authenticated)
+- [x] Add an answer (authenticated)
+- [x] Logout clears JWT and Apollo cache

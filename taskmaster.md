@@ -270,14 +270,14 @@ Definition of done
 **Depends on:** Tasks 3, 6, 7, 8
 **Blocks:** Task 10
 
-- [ ] 9.1 Replace question list loading with useQuery.
-- [ ] 9.2 Replace selected question loading with useQuery using the selected ID.
-- [ ] 9.3 Replace register flow with useMutation and auto-login state updates.
-- [ ] 9.4 Replace login flow with useMutation.
-- [ ] 9.5 Replace create question flow with useMutation and UI refresh behavior.
-- [ ] 9.6 Replace add answer flow with useMutation and selected-question refresh behavior.
-- [ ] 9.7 Remove the frontend REST helper from active usage.
-- [ ] 9.8 Update status messages to match current UX expectations as closely as possible.
+- [x] 9.1 Replace question list loading with useQuery.
+- [x] 9.2 Replace selected question loading with useQuery using the selected ID.
+- [x] 9.3 Replace register flow with useMutation and auto-login state updates.
+- [x] 9.4 Replace login flow with useMutation.
+- [x] 9.5 Replace create question flow with useMutation and UI refresh behavior.
+- [x] 9.6 Replace add answer flow with useMutation and selected-question refresh behavior.
+- [x] 9.7 Remove the frontend REST helper from active usage.
+- [x] 9.8 Update status messages to match current UX expectations as closely as possible.
 
 ```graphql
 query Questions {
@@ -357,16 +357,16 @@ Definition of done
 **Depends on:** Tasks 1 through 9
 **Blocks:** none
 
-- [ ] 10.1 Verify /graphql manually with direct queries and mutations.
-- [ ] 10.2 Verify the frontend end to end for list, detail, register, login, create question, and add answer.
-- [ ] 10.3 Confirm protected mutations fail without a token and succeed with a valid token.
-- [ ] 10.4 Search the frontend for leftover REST endpoint usage and remove any remaining references.
-- [ ] 10.5 Add targeted automated tests for resolver auth enforcement and key UI flows if setup remains proportionate.
-- [ ] 10.6 Update README instructions to reflect GraphQL/Apollo usage and current run steps.
-- [ ] 10.7 Verify the working directory is attached to the correct git repository.
-- [ ] 10.8 Verify origin is set to https://github.com/louverture-t/rest-to-graphQL-refactor.git.
-- [ ] 10.9 Verify git user identity is louverture-t.
-- [ ] 10.10 Commit and push only after all previous subtasks are complete and verified.
+- [x] 10.1 Verify /graphql manually with direct queries and mutations.
+- [x] 10.2 Verify the frontend end to end for list, detail, register, login, create question, and add answer.
+- [x] 10.3 Confirm protected mutations fail without a token and succeed with a valid token.
+- [x] 10.4 Search the frontend for leftover REST endpoint usage and remove any remaining references.
+- [x] 10.5 Add targeted automated tests for resolver auth enforcement and key UI flows if setup remains proportionate.
+- [x] 10.6 Update README instructions to reflect GraphQL/Apollo usage and current run steps.
+- [x] 10.7 Verify the working directory is attached to the correct git repository.
+- [x] 10.8 Verify origin is set to https://github.com/louverture-t/rest-to-graphQL-refactor.git.
+- [x] 10.9 Verify git user identity is louverture-t.
+- [x] 10.10 Commit and push only after all previous subtasks are complete and verified.
 
 ```bash
 # Verification examples

@@ -1,6 +1,82 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useApolloClient } from '@apollo/client';
-import { api } from './api';
+import { useState } from 'react';
+import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
+
+const GET_QUESTIONS = gql`
+  query Questions {
+    questions {
+      id
+      title
+      body
+      createdBy
+      createdAt
+      answers {
+        id
+        body
+        createdBy
+        createdAt
+      }
+    }
+  }
+`;
+
+const GET_QUESTION = gql`
+  query Question($id: ID!) {
+    question(id: $id) {
+      id
+      title
+      body
+      createdBy
+      answers {
+        id
+        body
+        createdBy
+        createdAt
+      }
+    }
+  }
+`;
+
+const REGISTER = gql`
+  mutation Register($username: String!, $email: String!, $password: String!) {
+    register(username: $username, email: $email, password: $password) {
+      token
+      user { id username email }
+    }
+  }
+`;
+
+const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user { id username email }
+    }
+  }
+`;
+
+const CREATE_QUESTION = gql`
+  mutation CreateQuestion($title: String!, $body: String!) {
+    createQuestion(title: $title, body: $body) {
+      id
+      title
+      body
+      createdBy
+    }
+  }
+`;
+
+const ADD_ANSWER = gql`
+  mutation AddAnswer($questionId: ID!, $body: String!) {
+    addAnswer(questionId: $questionId, body: $body) {
+      id
+      answers {
+        id
+        body
+        createdBy
+      }
+    }
+  }
+`;
 
 const defaultAuth = { username: '', email: '', password: '' };
 const defaultQuestion = { title: '', body: '' };
@@ -14,57 +90,66 @@ function App() {
   });
   const [authForm, setAuthForm] = useState(defaultAuth);
   const [isRegister, setIsRegister] = useState(false);
-  const [questions, setQuestions] = useState([]);
   const [selectedQuestionId, setSelectedQuestionId] = useState('');
-  const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [questionForm, setQuestionForm] = useState(defaultQuestion);
   const [answerBody, setAnswerBody] = useState('');
   const [status, setStatus] = useState('Welcome to Stack Eleven.');
 
-  const selected = useMemo(
-    () => questions.find((question) => question._id === selectedQuestionId) || selectedQuestion,
-    [questions, selectedQuestion, selectedQuestionId]
-  );
+  const { data: questionsData } = useQuery(GET_QUESTIONS);
+  const { data: questionData } = useQuery(GET_QUESTION, {
+    variables: { id: selectedQuestionId },
+    skip: !selectedQuestionId,
+  });
 
-  const loadQuestions = async () => {
-    const data = await api.getQuestions();
-    setQuestions(Array.isArray(data) ? data : []);
-  };
+  const [register] = useMutation(REGISTER);
+  const [login] = useMutation(LOGIN);
+  const [createQuestion] = useMutation(CREATE_QUESTION, {
+    refetchQueries: [{ query: GET_QUESTIONS }],
+  });
+  const [addAnswer] = useMutation(ADD_ANSWER);
 
-  useEffect(() => {
-    loadQuestions();
-  }, []);
-
-  useEffect(() => {
-    if (!selectedQuestionId) return;
-    api.getQuestionById(selectedQuestionId).then(setSelectedQuestion);
-  }, [selectedQuestionId]);
+  const questions = questionsData?.questions || [];
+  const selected =
+    questionData?.question || questions.find((q) => q.id === selectedQuestionId) || null;
 
   const handleAuthSubmit = async (event) => {
     event.preventDefault();
 
     if (isRegister) {
-      const data = await api.register(authForm);
-      if (data.message) {
-        setStatus(data.message);
-      } else {
-        setStatus('Registered. You can now sign in.');
+      try {
+        const { data } = await register({
+          variables: {
+            username: authForm.username,
+            email: authForm.email,
+            password: authForm.password,
+          },
+        });
+        const { token: newToken, user: newUser } = data.register;
+        localStorage.setItem('token', newToken);
+        localStorage.setItem('user', JSON.stringify(newUser));
+        setToken(newToken);
+        setUser(newUser);
         setIsRegister(false);
+        setStatus(`Registered and signed in as ${newUser.username}.`);
+      } catch (err) {
+        setStatus(err.graphQLErrors?.[0]?.message || 'Registration failed.');
       }
       return;
     }
 
-    const data = await api.login(authForm);
-    if (!data.token) {
-      setStatus(data.message || 'Login failed');
-      return;
+    try {
+      const { data } = await login({
+        variables: { email: authForm.email, password: authForm.password },
+      });
+      const { token: newToken, user: newUser } = data.login;
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(newUser));
+      setToken(newToken);
+      setUser(newUser);
+      setStatus(`Signed in as ${newUser.username}.`);
+    } catch (err) {
+      setStatus(err.graphQLErrors?.[0]?.message || 'Login failed.');
     }
-
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setToken(data.token);
-    setUser(data.user);
-    setStatus(`Signed in as ${data.user.username}`);
   };
 
   const handleLogout = () => {
@@ -78,17 +163,16 @@ function App() {
 
   const handleQuestionSubmit = async (event) => {
     event.preventDefault();
-    const created = await api.createQuestion(questionForm, token);
-
-    if (created.message) {
-      setStatus(created.message);
-      return;
+    try {
+      const { data } = await createQuestion({
+        variables: { title: questionForm.title, body: questionForm.body },
+      });
+      setQuestionForm(defaultQuestion);
+      setSelectedQuestionId(data.createQuestion.id);
+      setStatus('Question created.');
+    } catch (err) {
+      setStatus(err.graphQLErrors?.[0]?.message || 'Failed to create question.');
     }
-
-    setQuestionForm(defaultQuestion);
-    setSelectedQuestionId(created._id);
-    setStatus('Question created.');
-    await loadQuestions();
   };
 
   const handleAnswerSubmit = async (event) => {
@@ -97,22 +181,21 @@ function App() {
       setStatus('Pick a question before posting an answer.');
       return;
     }
-
-    const updated = await api.createAnswer(selectedQuestionId, { body: answerBody }, token);
-    if (updated.message) {
-      setStatus(updated.message);
-      return;
+    try {
+      await addAnswer({
+        variables: { questionId: selectedQuestionId, body: answerBody },
+        refetchQueries: [{ query: GET_QUESTION, variables: { id: selectedQuestionId } }],
+      });
+      setAnswerBody('');
+      setStatus('Answer posted.');
+    } catch (err) {
+      setStatus(err.graphQLErrors?.[0]?.message || 'Failed to post answer.');
     }
-
-    setAnswerBody('');
-    setSelectedQuestion(updated);
-    setStatus('Answer posted.');
-    await loadQuestions();
   };
 
   return (
     <main className="app">
-      <h1>Stack Eleven (REST Starter)</h1>
+      <h1>Stack Eleven</h1>
       <p className="status">{status}</p>
 
       <section className="card">
@@ -153,8 +236,8 @@ function App() {
         <h2>Questions</h2>
         <ul>
           {questions.map((question) => (
-            <li key={question._id}>
-              <button onClick={() => setSelectedQuestionId(question._id)}>
+            <li key={question.id}>
+              <button onClick={() => setSelectedQuestionId(question.id)}>
                 {question.title} • by {question.createdBy}
               </button>
             </li>
@@ -193,7 +276,7 @@ function App() {
             <h4>Answers</h4>
             <ul>
               {(selected.answers || []).map((answer) => (
-                <li key={answer._id}>
+                <li key={answer.id}>
                   {answer.body} — {answer.createdBy}
                 </li>
               ))}
