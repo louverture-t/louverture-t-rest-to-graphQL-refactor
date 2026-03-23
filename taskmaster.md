@@ -13,10 +13,12 @@ Status rule: check off a task or subtask only when its implementation and verifi
 **Depends on:** none
 **Blocks:** Tasks 2 through 10
 
-- [ ] 1.1 Inventory current backend REST endpoints and expected payload shapes from auth and question routes.
-- [ ] 1.2 Inventory current frontend state transitions for login, register, question list, question detail, create question, and create answer.
-- [ ] 1.3 Record user-visible success and error messages that should remain equivalent after the refactor.
-- [ ] 1.4 Record the current auth token storage and bearer-header behavior.
+- [x] 1.1 Inventory current backend REST endpoints and expected payload shapes from auth and question routes.
+- [x] 1.2 Inventory current frontend state transitions for login, register, question list, question detail, create question, and create answer.
+- [x] 1.3 Record user-visible success and error messages that should remain equivalent after the refactor.
+- [x] 1.4 Record the current auth token storage and bearer-header behavior.
+
+Baseline artifact: `Starter/task-1-rest-baseline.md`
 
 ```text
 Inputs
@@ -34,10 +36,10 @@ Definition of done
 **Depends on:** Task 1
 **Blocks:** Tasks 3 through 9
 
-- [ ] 2.1 Add backend runtime dependencies for Apollo Server, GraphQL, and Express integration.
-- [ ] 2.2 Add frontend runtime dependencies for Apollo Client and GraphQL.
-- [ ] 2.3 Confirm package scripts still support local development for backend and frontend.
-- [ ] 2.4 Confirm no unnecessary dependency churn was introduced.
+- [x] 2.1 Add backend runtime dependencies for Apollo Server, GraphQL, and Express integration.
+- [x] 2.2 Add frontend runtime dependencies for Apollo Client and GraphQL.
+- [x] 2.3 Confirm package scripts still support local development for backend and frontend.
+- [x] 2.4 Confirm no unnecessary dependency churn was introduced.
 
 ```bash
 # Backend
