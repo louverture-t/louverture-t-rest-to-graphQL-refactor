@@ -365,6 +365,7 @@ Definition of done
 - [x] 10.6 Update README instructions to reflect GraphQL/Apollo usage and current run steps.
 - [x] 10.7 Verify the working directory is attached to the correct git repository.
 - [x] 10.8 Verify origin is set to https://github.com/louverture-t/rest-to-graphQL-refactor.git.
+  <!-- Note: actual repo URL is https://github.com/louverture-t/louverture-t-rest-to-graphQL-refactor.git — push succeeded there -->
 - [x] 10.9 Verify git user identity is louverture-t.
 - [x] 10.10 Commit and push only after all previous subtasks are complete and verified.
 
